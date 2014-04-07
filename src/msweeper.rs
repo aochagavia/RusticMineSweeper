@@ -31,6 +31,8 @@ fn main() {
     println!("--INSTRUCTIONS--\n");
 	println!("Show the content of a square: s x y (example: s 2 3).");
 	println!("Mark a square as a mine: m x y (example: m 2 3).\n");
+    println!("Press enter to continue...");
+    reader.read_line();
     
     // Game loop
     while board.game_running() {
