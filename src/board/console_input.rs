@@ -7,7 +7,7 @@ There are two possible actions:
 
 */
 
-use board::Board;
+use super::Board;
 
 pub trait ConsoleInput {
     fn console_input(&mut self, string: &str);

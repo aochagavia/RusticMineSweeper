@@ -4,8 +4,8 @@ Implements an iterator object to go through all the squares of the board.
 
 */
 
-use board::Board;
-use board::Square;
+use super::Board;
+use super::square::Square;
 
 pub struct SquareIter<'a> {
     board: &'a Board,
@@ -25,7 +25,7 @@ impl<'a> Iterator<&'a Square> for SquareIter<'a> {
             return None;
         }
         
-        let square = &'a self.board.squares[self.x][self.y];
+        let square = self.board.get_square(self.x, self.y);
         
         // Advance to the next square
         if self.x + 1 < self.board.width {

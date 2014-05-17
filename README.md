@@ -1,7 +1,7 @@
 Rustic Mine Sweeper
 ==================
 
-A basic implementation of the Mine Sweeper game using the Rust programming language 0.10.
+A basic implementation of the Mine Sweeper game using the Rust programming language. To build it you will need the latest nightly build of the compiler.
 
 
 ##Why?
