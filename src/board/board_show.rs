@@ -54,6 +54,6 @@ impl Show for Board {
             buf.push_str("\n\n");
         }
         
-        f.pad(buf.as_slice())
+        buf.fmt(f)
     }
 }
