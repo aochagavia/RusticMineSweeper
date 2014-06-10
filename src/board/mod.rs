@@ -5,7 +5,7 @@ It contains different functions to control the gameplay.
 
 */
 
-use rand::{ task_rng, Rng };
+use std::rand::{ task_rng, Rng };
 use self::square::Square;
 pub use self::console_input::ConsoleInput;
 use self::square_iter::SquareIter;
@@ -137,7 +137,7 @@ impl Board {
     // Return true if it is the first move of the player
     // This happens when all squares are hidden
     pub fn first_turn(&self) -> bool {
-        self.iter().count(|square| !square.is_hidden()) == 0
+        self.iter().filter(|square| !square.is_hidden()).count() == 0
     }
     
     // Returns true if the game is running
@@ -154,7 +154,7 @@ impl Board {
     // Returns true if there are no possible moves left
     // This happens when all squares are shown except the mines
     pub fn no_moves_left(&self) -> bool {
-        self.iter().count(|square| square.is_hidden()) == self.total_mines
+        self.iter().filter(|square| square.is_hidden()).count() == self.total_mines
     }
     
     // Returns the amount of mines that have not been marked
@@ -178,7 +178,7 @@ impl Board {
     
     // Returns the amount of squares marked as mines
     fn marked_mines(&self) -> uint {
-        self.iter().count(|square| square.is_marked())
+        self.iter().filter(|square| square.is_marked()).count()
     }
     
     // Returns true if the coordinates are within the bounds of the board
