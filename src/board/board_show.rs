@@ -13,42 +13,26 @@ impl Show for Board {
         // The numbers of the columns
         try!(write!(f, "     "));
         for x in range(0, self.width) {
-            if x < 9 {
-                try!(write!(f, "  "));
-            }
-            else {
-                try!(write!(f, " "));
-            }
-            try!(write!(f, "{}", x + 1));
+            let spaces = if x < 9 { "  " } else { " " };
+            try!(write!(f, "{}{}", spaces, x + 1));
         }
-        
+
         // A horizontal line
         try!(write!(f, "\n     {}\n", "_".repeat(3 * self.width)));
-        
+
         // Vertical coordinate numbers + vertical line
         for y in range(0, self.height) {
-            if y < 9 {
-                try!(write!(f, "  "));
-            }
-            else {
-                try!(write!(f, " "));
-            }
-            try!(write!(f, "{} |", y + 1));
-            
-            // Content of the board
+            let spaces = if y < 9 { "  " } else { " " };
+            try!(write!(f, "{}{} |", spaces, y + 1));
+
+            // The squares of the current line
             for x in range(0, self.width) {
-                if self.get_square(x, y).is_hidden() {
-                    if self.get_square(x, y).is_marked() { try!(write!(f, "  \\#")); }
-                    else { try!(write!(f, "  *")); }
-                }
-                else if self.get_square(x, y).is_mine() { try!(write!(f, "  X")); }
-                else if self.get_square(x, y).is_empty() { try!(write!(f, "   ")); }
-                else { try!(write!(f, "  {}", self.get_square(x, y).get_value())); }
+                try!(write!(f, "{}", self.get_square(x, y)));
             }
-            
+
             try!(write!(f, "\n\n"));
         }
-        
+
         Ok(())
     }
 }
