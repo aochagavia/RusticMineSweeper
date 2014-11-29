@@ -27,7 +27,7 @@ impl Show for Board {
 
             // The squares of the current line
             for x in range(0, self.width) {
-                try!(write!(f, "{}", self.get_square(x, y)));
+                try!(write!(f, "{}", self.squares[x][y]));
             }
 
             try!(write!(f, "\n\n"));

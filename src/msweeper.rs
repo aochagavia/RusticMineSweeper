@@ -4,8 +4,10 @@ Implements the Mine Sweeper game based on the Board struct.
 
 */
 
-use board::Board;
-use board::ConsoleInput;
+#![feature(globs)]
+
+use self::board::Board;
+use self::board::ConsoleInput;
 
 mod board;
 
@@ -20,7 +22,7 @@ fn main() {
 
     let mut reader = std::io::stdin();
     let choice = reader.read_line().unwrap();
-    let level = from_str(choice.as_slice().trim_right()).unwrap_or(1);
+    let level = from_str(choice.trim_right()).unwrap_or(1);
 
     let mut board = Board::new(level);
 
@@ -42,7 +44,7 @@ fn main() {
 
         // Get the next command
         print!("Command: ");
-        board.console_input(reader.read_line().unwrap().as_slice().trim_right());
+        board.console_input(reader.read_line().unwrap().trim_right());
     }
 
     // Ending

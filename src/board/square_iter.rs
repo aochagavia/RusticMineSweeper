@@ -4,8 +4,6 @@ Implements an iterator object to go through all the squares of the board.
 
 */
 
-use std::num;
-
 use super::Board;
 use super::square::Square;
 
@@ -20,8 +18,7 @@ impl<'a> SquareIter<'a> {
     }
 
     fn n_to_2d(&self) -> (uint, uint) {
-        let (y, x) = num::div_rem(self.n, self.board.width);
-        (x, y)
+        (self.n / self.board.width, self.n % self.board.width)
     }
 }
 
@@ -30,13 +27,13 @@ impl<'a> Iterator<&'a Square> for SquareIter<'a> {
         let (x, y) = self.n_to_2d();
 
         if !self.board.is_valid(x as int, y as int) {
-            return None;
+            None
+        } else {
+            // Advance to the next square
+            self.n += 1;
+
+            Some(&self.board.squares[x][y])
         }
-
-        // Advance to the next square
-        self.n += 1;
-
-        Some(self.board.get_square(x, y))
     }
 }
 

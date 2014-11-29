@@ -10,10 +10,10 @@ use self::square::Square;
 pub use self::console_input::ConsoleInput;
 use self::square_iter::SquareIter;
 
-mod square;
-mod console_input;
-mod square_iter;
 mod board_show;
+pub mod console_input;
+mod square;
+mod square_iter;
 
 pub struct Board {
     squares: Vec<Vec<Square>>,
@@ -38,7 +38,7 @@ impl Board {
                 width = 16;
                 height = 16;
             }
-            _ => fail!("Level {} does not exist!", level)
+            _ => panic!("Level {} does not exist!", level)
         }
 
         // Use one column of "height" squares and copy it "width" times
@@ -52,14 +52,14 @@ impl Board {
     pub fn add_mines(&mut self, x: uint, y: uint) {
         let mut rand = task_rng();
 
-        let mut tempX; let mut tempY;
+        let mut temp_x; let mut temp_y;
         let mut mines_set = 0;
         while mines_set < self.total_mines {
-            tempX = rand.gen_range(0u, self.width);
-            tempY = rand.gen_range(0u, self.height);
+            temp_x = rand.gen_range(0, self.width);
+            temp_y = rand.gen_range(0, self.height);
 
-            if !(tempX == x && tempY == y) && !self.get_square(tempX, tempY).is_mine() {
-                self.get_mut_square(tempX, tempY).set_mine();
+            if !(temp_x == x && temp_y == y) && !self.squares[temp_x][temp_y].is_mine() {
+                self.squares[temp_x][temp_y].set_mine();
                 mines_set += 1;
             }
         }
@@ -79,27 +79,29 @@ impl Board {
         }
 
         // Empty squares get a special treatment to show "empty square islands"
-        if self.get_square(x, y).is_empty() {
+        if self.squares[x][y].is_empty() {
             self.show_empty_squares(x as int, y as int);
         } else {
-            self.get_mut_square(x, y).show();
+            self.squares[x][y].show();
         }
     }
 
     // Shows all empty squares connected to this one, the ones connected to them, and so on
     // The numbers in the bounds of the "empty squares island" will also be shown
     fn show_empty_squares(&mut self, x: int, y: int) {
+        let (ux, uy) = (x as uint, y as uint);
+
         if !self.is_valid(x, y)
-        || self.get_square(x as uint, y as uint).is_mine()
-        || !self.get_square(x as uint, y as uint).is_hidden() {
+        || self.squares[ux][uy].is_mine()
+        || !self.squares[ux][uy].is_hidden() {
             return;
         }
-        else if !self.get_square(x as uint, y as uint).is_empty() {
-            self.get_mut_square(x as uint, y as uint).show();
+        else if !self.squares[ux][uy].is_empty() {
+            self.squares[ux][uy].show();
             return;
         }
 
-        self.get_mut_square(x as uint, y as uint).show();
+        self.squares[ux][uy].show();
         for aux_x in range(x - 1, x + 2) {
             for aux_y in range(y - 1, y + 2) {
                 self.show_empty_squares(aux_x, aux_y);
@@ -110,7 +112,7 @@ impl Board {
     // Marks a square to indicate that you expect it to be a mine
     pub fn mark_square(&mut self, x: uint, y: uint) {
         if self.is_valid(x as int, y as int) {
-            self.get_mut_square(x, y).mark();
+            self.squares[x][y].mark();
         }
     }
 
@@ -118,10 +120,10 @@ impl Board {
     fn generate_numbers(&mut self) {
         for x in range(0, self.width) {
             for y in range(0, self.height) {
-                if !self.get_square(x, y).is_mine() {
+                if !self.squares[x][y].is_mine() {
                     match self.surrounding_mines(x, y) {
-                        0 => self.get_mut_square(x, y).set_empty(),
-                        n => self.get_mut_square(x, y).set_value(n)
+                        0 => self.squares[x][y].set_empty(),
+                        n => self.squares[x][y].set_value(n)
                     }
                 }
             }
@@ -158,16 +160,11 @@ impl Board {
 
     // Returns the amount of mines surrounding the point x, y
     fn surrounding_mines(&self, x: uint, y: uint) -> uint {
-        let mut count = 0;
-        for aux_x in range(x as int - 1, x as int + 2) {
-            for aux_y in range(y as int - 1, y as int + 2) {
-                if self.is_valid(aux_x, aux_y) && self.get_square(aux_x as uint, aux_y as uint).is_mine() {
-                    count += 1;
-                }
-            }
-        }
-
-        count
+        range(x as int - 1, x as int + 2)
+            .zip(range(y as int - 1, y as int + 2))
+            .filter(|&(aux_x, aux_y)| self.is_valid(aux_x, aux_y) &&
+                                      self.squares[aux_x as uint][aux_y as uint].is_mine())
+            .count()
     }
 
     // Returns the amount of squares marked as mines
@@ -179,14 +176,6 @@ impl Board {
     fn is_valid(&self, x: int, y: int) -> bool {
         0 <= x && x < self.width as int && 0 <= y && y < self.height as int
     }
-
-	fn get_square<'a>(&'a self, x: uint, y: uint) -> &'a Square {
-		self.squares.get(x).get(y)
-	}
-
-	fn get_mut_square<'a>(&'a mut self, x: uint, y: uint) -> &'a mut Square {
-		self.squares.get_mut(x).get_mut(y)
-	}
 
     fn iter<'a>(&'a self) -> SquareIter<'a> {
         SquareIter::new(self)

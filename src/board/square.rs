@@ -5,6 +5,7 @@ Implements the Square struct, which is the building block of the Board.
 */
 
 use std::fmt;
+use self::SquareContent::*;
 
 #[deriving(Clone)]
 enum SquareContent {
