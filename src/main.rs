@@ -4,12 +4,19 @@ Implements the Mine Sweeper game based on the Board struct.
 
 */
 
-#![feature(globs)]
+#![feature(unicode)]
+
+extern crate rand;
+extern crate unicode;
+extern crate term_painter;
+
+mod board;
+
+use std::io::BufRead;
+use unicode::str::UnicodeStr;
 
 use self::board::Board;
 use self::board::ConsoleInput;
-
-mod board;
 
 fn main() {
     println!("----------------------");
@@ -20,9 +27,9 @@ fn main() {
     println!("1- Beginner (9x9 and 10 mines)");
     println!("2- Intermediate (16x16 and 40 mines)");
 
-    let mut reader = std::io::stdin();
-    let choice = reader.read_line().unwrap();
-    let level = from_str(choice.trim_right()).unwrap_or(1);
+    let stdin = std::io::stdin();
+    let mut lines = stdin.lock().lines();
+    let level = lines.next().unwrap().unwrap().trim_right().parse().unwrap_or(1);
 
     let mut board = Board::new(level);
 
@@ -31,12 +38,12 @@ fn main() {
 	println!("Show the content of a square: s x y (example: s 2 3).");
 	println!("Mark a square as a mine: m x y (example: m 2 3).\n");
     println!("Press enter to continue...");
-    reader.read_line().ok().expect("IO Error");
+    lines.next().unwrap().unwrap();
 
     // Game loop
     while board.game_running() {
         // Clear screen
-        println!("{}", "\n".repeat(50));
+        cls();
 
         // Show board and status
         print!("{}", board);
@@ -44,7 +51,7 @@ fn main() {
 
         // Get the next command
         print!("Command: ");
-        board.console_input(reader.read_line().unwrap().trim_right());
+        board.console_input(lines.next().unwrap().unwrap().trim_right());
     }
 
     // Ending
@@ -53,5 +60,11 @@ fn main() {
         println!("You lost! Better luck the next time!");
     } else {
         println!("Congratulations! You won!");
+    }
+}
+
+fn cls() {
+    for _ in 0..50 {
+        println!("");
     }
 }

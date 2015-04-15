@@ -18,7 +18,7 @@ impl ConsoleInput for Board {
         let mut input = string.split(' ');
         let action = input.next().unwrap_or("");
 
-        let mut coords = input.map(|n| from_str::<uint>(n).unwrap_or(0));
+        let mut coords = input.map(|n| n.parse().unwrap_or(0));
         match (action, coords.next(), coords.next()) {
             ("s", Some(x), Some(y)) => self.show_square(x - 1, y - 1),
             ("m", Some(x), Some(y)) => self.mark_square(x - 1, y - 1),

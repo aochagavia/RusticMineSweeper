@@ -1,0 +1,12 @@
+[package]
+
+name = "RusticMineSweeper"
+version = "0.0.1"
+authors = ["Adolfo Ochagavía <aochagavia92@gmail.com>"]
+
+[dependencies]
+rand = "0.*"
+
+[dependencies.term-painter]
+
+git = "https://github.com/LukasKalbertodt/term-painter"
