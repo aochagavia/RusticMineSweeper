@@ -4,16 +4,12 @@ Implements the Mine Sweeper game based on the Board struct.
 
 */
 
-#![feature(unicode)]
-
 extern crate rand;
-extern crate unicode;
 extern crate term_painter;
 
 mod board;
 
 use std::io::BufRead;
-use unicode::str::UnicodeStr;
 
 use self::board::Board;
 use self::board::ConsoleInput;

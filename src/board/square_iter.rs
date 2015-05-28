@@ -42,5 +42,5 @@ impl<'a> Iterator for SquareIter<'a> {
 #[test]
 fn square_iter_test() {
     let board = Board::new(1);
-    assert_eq!(board.iter().count(), board.width() * board.height());
+    assert_eq!(board.iter().count() as u32, board.width() * board.height());
 }
